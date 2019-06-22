@@ -85,6 +85,10 @@ class OyvindGraph {
       this.context.strokeStyle = this.gridColor;
       this.context.lineWidth = 1;
 
+      this.context.shadowOffsetX = 0;
+      this.context.shadowOffsetY = 0;
+      this.context.shadowBlur = 0;
+
       this.context.stroke();
     }
 
@@ -116,8 +120,30 @@ class OyvindGraph {
 
       this.context.shadowOffsetX = 0;
       this.context.shadowOffsetY = 0;
-      this.context.shadowBlur = 0; //2 * this.lineWidth;
-      this.context.shadowColor = this.shadowColor; //this.lineColor;*/
+      this.context.shadowBlur = 0;
+
+      this.context.stroke();
+    });
+
+    // Draw horizontal lines specified by the user
+    horizontalLines.forEach(lineYValue => {
+      this.context.beginPath();
+      const currentX = 0;
+      const currentY =
+        ((verticalSpan / 2 + averageValue - lineYValue) * this.height) /
+        verticalSpan;
+      const nextX = this.width;
+      const nextY = currentY;
+
+      this.context.moveTo(currentX, currentY);
+      this.context.lineTo(nextX, nextY);
+
+      this.context.strokeStyle = this.horizontalLineColor;
+      this.context.lineWidth = 2;
+
+      this.context.shadowOffsetX = 0;
+      this.context.shadowOffsetY = 0;
+      this.context.shadowBlur = 0;
 
       this.context.stroke();
     });
@@ -145,33 +171,9 @@ class OyvindGraph {
       this.context.shadowOffsetX = 0;
       this.context.shadowOffsetY = 0; //this.lineWidth;
       this.context.shadowBlur = 10; //this.lineWidth;
-      this.context.shadowColor = this.shadowColor; //this.lineColor;*
+      this.context.shadowColor = this.shadowColor;
 
       this.context.stroke();
     }
-
-    // Draw horizontal lines specified by the user
-    horizontalLines.forEach(lineYValue => {
-      this.context.beginPath();
-      const currentX = 0;
-      const currentY =
-        ((verticalSpan / 2 + averageValue - lineYValue) * this.height) /
-        verticalSpan;
-      const nextX = this.width;
-      const nextY = currentY;
-
-      this.context.moveTo(currentX, currentY);
-      this.context.lineTo(nextX, nextY);
-
-      this.context.strokeStyle = this.horizontalLineColor;
-      this.context.lineWidth = 2;
-
-      this.context.shadowOffsetX = 0;
-      this.context.shadowOffsetY = 0;
-      this.context.shadowBlur = 0; //2 * this.lineWidth;
-      this.context.shadowColor = this.shadowColor; //this.lineColor;*/
-
-      this.context.stroke();
-    });
   }
 }
