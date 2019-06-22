@@ -1,29 +1,31 @@
 <script src="oyvindGraph.js"></script>
 <div id="graphExample"></div>
 <script>
-  const graphData = [
-    2000,
-    3000,
-    5000,
-    1000,
-    6000,
-    3000,
-    6000,
-    5000,
-    500,
-    2500,
-    8000
-  ];
   const graph = new OyvindGraph({
     id: "graphExample",
     width: "960",
     height: "540",
-    background: "#2c3e50", // Optional
-    lineWidth: 5, // Optional
+    background: "#34495e", // Optional
+    lineWidth: 2, // Optional
     lineColor: "#ffffff", // Optional
-    shadowColor: "#3498db",
-    horizontalLineWidth: 2,
-    horizontalLineColor: "#ecf0f1"
+    shadowColor: "#3498db", // Optional
+    horizontalLineWidth: 2, // Optional
+    horizontalLineColor: "#ecf0f1" // Optional
   });
-  graph.createGraph(graphData, [2000, 4000]);
+
+  const nextValue = currentValue =>
+    currentValue * (Math.random() > 0.5 ? 1.1 : 1 / 1.1);
+  const graphData = [];
+  let currentValue = 1000;
+  for (let i = 0; i < 1000; i++) {
+    currentValue = nextValue(currentValue);
+    graphData.push(currentValue);
+  }
+  iterate = () => {
+    graphData.shift();
+    graphData.push(nextValue(graphData[graphData.length - 1]));
+    graph.createGraph(graphData, [2000, 4000]);
+    setTimeout(iterate, 4);
+  };
+  iterate();
 </script>
