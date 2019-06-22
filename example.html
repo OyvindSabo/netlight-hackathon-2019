@@ -9,20 +9,18 @@
       this.background = background;
     }
 
+    _maxValue = arr => arr.reduce((val, acc) => Math.max(val, acc), -Infinity);
+
+    _minValue = arr => arr.reduce((val, acc) => Math.min(val, acc), Infinity);
+
     createGraph(graphData) {
       const canvas = document.createElement("Canvas");
       canvas.setAttribute("width", this.width);
       canvas.setAttribute("height", this.height);
       document.getElementById(this.id).appendChild(canvas);
       const context = canvas.getContext("2d");
-      const maxValue = graphData.reduce(
-        (val, acc) => Math.max(val, acc),
-        -Infinity
-      );
-      const minValue = graphData.reduce(
-        (val, acc) => Math.min(val, acc),
-        Infinity
-      );
+      const maxValue = this._maxValue(graphData);
+      const minValue = this._minValue(graphData);
       context.fillStyle = this.background;
       context.fillRect(0, 0, this.width, this.height);
     }
