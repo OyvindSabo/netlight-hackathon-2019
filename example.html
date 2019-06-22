@@ -1,0 +1,29 @@
+<!--<script src="oyvindGraph.js"></script>-->
+<div id="graphExample"></div>
+<script>
+  class OyvindGraph {
+    constructor({ id, width = 1920, height = 1080 }) {
+      this.id = id;
+      this.width = width;
+      this.height = height;
+    }
+
+    createGraph(graphData) {
+      const canvas = document.createElement("Canvas");
+      canvas.setAttribute("width", this.width);
+      canvas.setAttribute("height", this.height);
+      document.getElementById(this.id).appendChild(canvas);
+      const context = canvas.getContext("2d");
+      context.fillStyle = "blue";
+      context.fillRect(0, 0, 500, 500);
+    }
+  }
+
+  const graphData = [2000, 3000, 5000, 1000, 6000, 3000, 6000, 5000, 500, 2500];
+  const graph = new OyvindGraph({
+    id: "graphExample",
+    width: "1920",
+    height: "1080"
+  });
+  graph.createGraph(graphData);
+</script>
