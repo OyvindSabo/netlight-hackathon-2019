@@ -7,7 +7,7 @@ I joined a Netlight hackathon and created an easy-to-use graph visualization.
 ### Creating a graph can be as simple as this:
 
 ```
-<script src="oyvindGraph.js"></script>
+<script src="OyvindGraph.js"></script>
 <div id="graphExample"></div>
 <script>
   const graph = new OyvindGraph({
