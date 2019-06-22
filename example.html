@@ -2,36 +2,110 @@
 <div id="graphExample"></div>
 <script>
   class OyvindGraph {
-    constructor({ id, width = 1920, height = 1080, background = "white" }) {
+    constructor({
+      id,
+      width = 1920,
+      height = 1080,
+      background = "#2c3e50",
+      lineWidth = 5,
+      lineColor = "#ffffff",
+      shadowColor = "#3498db"
+    }) {
       this.id = id;
       this.width = width;
       this.height = height;
       this.background = background;
+      this.lineWidth = lineWidth;
+      this.lineColor = lineColor;
+      this.shadowColor = shadowColor;
     }
 
     _maxValue = arr => arr.reduce((val, acc) => Math.max(val, acc), -Infinity);
 
     _minValue = arr => arr.reduce((val, acc) => Math.min(val, acc), Infinity);
 
+    _averageValue = arr => arr.reduce((val, acc) => val + acc) / arr.length;
+
+    _maxDevianceFromAverage = (avg, max, min) => Math.max(max - avg, avg - min);
+
     createGraph(graphData) {
       const canvas = document.createElement("Canvas");
       canvas.setAttribute("width", this.width);
       canvas.setAttribute("height", this.height);
       document.getElementById(this.id).appendChild(canvas);
-      const context = canvas.getContext("2d");
+
       const maxValue = this._maxValue(graphData);
       const minValue = this._minValue(graphData);
-      context.fillStyle = this.background;
+      const averageValue = this._averageValue(graphData);
+      const maxDevianceFromAverage = this._maxDevianceFromAverage(
+        averageValue,
+        maxValue,
+        minValue
+      );
+      const verticalSpan = (maxValue - minValue) * 1.2;
+
+      const context = canvas.getContext("2d");
+
+      // Clear canvas
+      const linearGradient = context.createLinearGradient(0, 0, 0, this.height);
+      linearGradient.addColorStop(0, this.background);
+      linearGradient.addColorStop(1, "black");
+      context.fillStyle = linearGradient;
       context.fillRect(0, 0, this.width, this.height);
+
+      // Draw exponential lines and numbers
+
+      // Draw graph
+      for (let i = 0; i < graphData.length - 1; i++) {
+        context.beginPath();
+
+        const currentX = (i * this.width) / (graphData.length - 1);
+        const currentY =
+          ((verticalSpan / 2 + averageValue - graphData[i]) * this.height) /
+          verticalSpan;
+        context.moveTo(currentX, currentY);
+
+        const nextX = ((i + 1) * this.width) / (graphData.length - 1);
+        const nextY =
+          ((verticalSpan / 2 + averageValue - graphData[i + 1]) * this.height) /
+          verticalSpan;
+        context.lineTo(nextX, nextY);
+
+        context.strokeStyle = this.lineColor;
+        context.lineWidth = this.lineWidth;
+        context.lineCap = "round";
+
+        context.shadowOffsetX = 0;
+        context.shadowOffsetY = this.lineWidth;
+        context.shadowBlur = 2 * this.lineWidth;
+        context.shadowColor = this.shadowColor; //this.lineColor;
+
+        context.stroke();
+      }
     }
   }
 
-  const graphData = [2000, 3000, 5000, 1000, 6000, 3000, 6000, 5000, 500, 2500];
+  const graphData = [
+    2000,
+    3000,
+    5000,
+    1000,
+    6000,
+    3000,
+    6000,
+    5000,
+    500,
+    2500,
+    8000
+  ];
   const graph = new OyvindGraph({
     id: "graphExample",
     width: "960",
     height: "540",
-    background: "#2c3e50"
+    background: "#2c3e50", // Optional
+    lineWidth: 5, // Optional
+    lineColor: "#ffffff", // Optional
+    shadowColor: "#3498db"
   });
   graph.createGraph(graphData);
 </script>
