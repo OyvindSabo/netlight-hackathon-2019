@@ -2,10 +2,11 @@
 <div id="graphExample"></div>
 <script>
   class OyvindGraph {
-    constructor({ id, width = 1920, height = 1080 }) {
+    constructor({ id, width = 1920, height = 1080, background = "white" }) {
       this.id = id;
       this.width = width;
       this.height = height;
+      this.background = background;
     }
 
     createGraph(graphData) {
@@ -14,16 +15,25 @@
       canvas.setAttribute("height", this.height);
       document.getElementById(this.id).appendChild(canvas);
       const context = canvas.getContext("2d");
-      context.fillStyle = "blue";
-      context.fillRect(0, 0, 500, 500);
+      const maxValue = graphData.reduce(
+        (val, acc) => Math.max(val, acc),
+        -Infinity
+      );
+      const minValue = graphData.reduce(
+        (val, acc) => Math.min(val, acc),
+        Infinity
+      );
+      context.fillStyle = this.background;
+      context.fillRect(0, 0, this.width, this.height);
     }
   }
 
   const graphData = [2000, 3000, 5000, 1000, 6000, 3000, 6000, 5000, 500, 2500];
   const graph = new OyvindGraph({
     id: "graphExample",
-    width: "1920",
-    height: "1080"
+    width: "960",
+    height: "540",
+    background: "#2c3e50"
   });
   graph.createGraph(graphData);
 </script>
