@@ -45,8 +45,22 @@ class OyvindGraph {
   _verticalPeriod = ({ length }) => (length - (length % 10)) / 10;
 
   _horizontalPeriod = verticalSpan => (verticalSpan - (verticalSpan % 10)) / 10;
+
   _horizontalPeriod = verticalSpan =>
     Math.pow(10, Math.floor(Math.log10(verticalSpan / 10)));
+
+  _numberOfZerosAtEnd = number => {
+    const charArray = `${Math.floor(number)}`.split("");
+    let zeroCounter = 0;
+    for (let i = charArray.length - 1; i >= 0; i--) {
+      if (charArray[i] === "0") {
+        zeroCounter++;
+      } else {
+        return zeroCounter;
+      }
+    }
+    return zeroCounter;
+  };
 
   createGraph(graphData, horizontalLines = []) {
     const maxValue = this._maxValue(graphData);
@@ -82,6 +96,7 @@ class OyvindGraph {
       this.context.moveTo(currentX, currentY);
       this.context.lineTo(nextX, nextY);
 
+      this.context.globalAlpha = 1;
       this.context.strokeStyle = this.gridColor;
       this.context.lineWidth = 1;
 
@@ -92,11 +107,9 @@ class OyvindGraph {
       this.context.stroke();
     }
 
-    // Draw the correct horizontal lines of the grid
-    // Draw horizontal lines for each value
+    // Draw the horizontal lines of the grid
     const minHorizontalLineValue = minValue - (minValue % 10);
     const horizontalPeriod = this._horizontalPeriod(verticalSpan);
-    //const horizontalPeriod = 1000;
     let horizontalLineValue = -(
       verticalSpan -
       (verticalSpan % horizontalPeriod)
@@ -118,6 +131,8 @@ class OyvindGraph {
       this.context.moveTo(currentX, currentY);
       this.context.lineTo(nextX, nextY);
 
+      this.context.globalAlpha =
+        this._numberOfZerosAtEnd(lineYValue) / Math.log10(maxValue);
       this.context.strokeStyle = this.gridColor;
       this.context.lineWidth = 1;
 
@@ -141,6 +156,7 @@ class OyvindGraph {
       this.context.moveTo(currentX, currentY);
       this.context.lineTo(nextX, nextY);
 
+      this.context.globalAlpha = 1;
       this.context.strokeStyle = this.horizontalLineColor;
       this.context.lineWidth = 2;
 
@@ -167,6 +183,7 @@ class OyvindGraph {
       this.context.moveTo(currentX, currentY);
       this.context.lineTo(nextX, nextY);
 
+      this.context.globalAlpha = 1;
       this.context.strokeStyle = this.lineColor;
       this.context.lineWidth = this.lineWidth;
       this.context.lineCap = "round";
