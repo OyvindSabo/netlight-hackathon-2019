@@ -34,7 +34,7 @@ class OyvindGraph {
 
   _maxDevianceFromAverage = (avg, max, min) => Math.max(max - avg, avg - min);
 
-  _weightedMaxDevianceFromAverage = (graphData, avg) =>
+  _standardDeviance = (graphData, avg) =>
     graphData.map(val => Math.abs(val - avg)).reduce((a, b) => a + b, 0) /
     graphData.length;
 
@@ -43,21 +43,20 @@ class OyvindGraph {
   // Find the highest number lower than the number of values which is divisible
   // by 10
   _verticalPeriod = ({ length }) => (length - (length % 10)) / 10;
+
   _horizontalPeriod = verticalSpan => (verticalSpan - (verticalSpan % 10)) / 10;
+  _horizontalPeriod = verticalSpan =>
+    Math.pow(10, Math.floor(Math.log10(verticalSpan / 10)));
 
   createGraph(graphData, horizontalLines = []) {
     const maxValue = this._maxValue(graphData);
     const minValue = this._minValue(graphData);
     const averageValue = this._averageValue(graphData);
-    const maxDevianceFromAverage = this._weightedMaxDevianceFromAverage(
-      graphData,
-      averageValue
-    );
-    console.log("weightedMaxDevianceFromAverage: ", maxDevianceFromAverage);
+    const standardDeviance = this._standardDeviance(graphData, averageValue);
 
     // Make sure that the space above and below the graph is at least as large
     // the area used to display the graph
-    const verticalSpan = maxDevianceFromAverage * 8;
+    const verticalSpan = standardDeviance * 8;
 
     // Draw gradient background
     const linearGradient = this.context.createLinearGradient(
@@ -89,15 +88,18 @@ class OyvindGraph {
       this.context.stroke();
     }
 
-    // Draw the horizontal lines of the grid
+    // Draw the correct horizontal lines of the grid
+    // Draw horizontal lines for each value
+    const minHorizontalLineValue = minValue - (minValue % 10);
     const horizontalPeriod = this._horizontalPeriod(verticalSpan);
-    const lowestValueAboveMinDivisibleByTen =
-      minValue + 10 - ((minValue + 10) % 10);
-    for (
-      let lineYValue = lowestValueAboveMinDivisibleByTen;
-      lineYValue < verticalSpan;
-      lineYValue += horizontalPeriod
-    ) {
+    //const horizontalPeriod = 1000;
+    let horizontalLineValue = minHorizontalLineValue;
+    const horizontalLineData = [];
+    while (horizontalLineValue < verticalSpan) {
+      horizontalLineData.push(horizontalLineValue);
+      horizontalLineValue += horizontalPeriod;
+    }
+    horizontalLineData.forEach(lineYValue => {
       this.context.beginPath();
       const currentX = 0;
       const currentY =
@@ -112,8 +114,13 @@ class OyvindGraph {
       this.context.strokeStyle = this.gridColor;
       this.context.lineWidth = 1;
 
+      this.context.shadowOffsetX = 0;
+      this.context.shadowOffsetY = 0;
+      this.context.shadowBlur = 0; //2 * this.lineWidth;
+      this.context.shadowColor = this.shadowColor; //this.lineColor;*/
+
       this.context.stroke();
-    }
+    });
 
     // Draw graph
     for (let i = 0; i < graphData.length - 1; i++) {
