@@ -97,7 +97,10 @@ class OyvindGraph {
     const minHorizontalLineValue = minValue - (minValue % 10);
     const horizontalPeriod = this._horizontalPeriod(verticalSpan);
     //const horizontalPeriod = 1000;
-    let horizontalLineValue = minHorizontalLineValue;
+    let horizontalLineValue = -(
+      verticalSpan -
+      (verticalSpan % horizontalPeriod)
+    );
     const horizontalLineData = [];
     while (horizontalLineValue < verticalSpan) {
       horizontalLineData.push(horizontalLineValue);
